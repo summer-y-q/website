@@ -1,26 +1,136 @@
-<!doctype html>
-<html lang="en">
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="ie=edge"><meta name="referrer" content="no-referrer"><title>深业智慧·深业泰然大厦</title><style>/*box-loading*/
+			.loading-cube {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				height: 100%;
+				overflow: hidden;
+				background: #f0f2f5;
+				z-index: 999999;
+			}
 
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="referrer" content="no-referrer">
-	<title>ziwen's page</title>
+			.cube-item {
+				width: 50px;
+				height: 50px;
+				margin: auto;
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0
+			}
 
-	<link rel="stylesheet" href="https://at.alicdn.com/t/font_1334574_f6pzu4i032g.css">
-	<!-- <script src="https://webapi.amap.com/maps?v=1.4.15&key=94d8aeeff7286259328bd1dcfff7d77b"></script>  -->
+			.cube-item:before {
+				content: '';
+				width: 50px;
+				height: 5px;
+				background: #000;
+				opacity: 0.1;
+				position: absolute;
+				top: 59px;
+				left: 0;
+				border-radius: 50%;
+				-webkit-animation: cube-shadow .5s linear infinite;
+						animation: cube-shadow .5s linear infinite;
+			}
 
-</head>
+			.cube-item:after {
+				content: '';
+				width: 50px;
+				height: 50px;
+				background: #3e8ef7;
+				-webkit-animation: cube-animate .5s linear infinite;
+						animation: cube-animate .5s linear infinite;
+				position: absolute;
+				top: 0;
+				left: 0;
+				border-radius: 3px;
+			}
 
-<body>
-	<base href="./">
+			
+			@-webkit-keyframes cube-animate {
+				17% {
+					border-bottom-right-radius: 3px;
+				}
+				25% {
+					-webkit-transform: translateY(9px) rotate(22.5deg);
+							transform: translateY(9px) rotate(22.5deg);
+				}
+				50% {
+					-webkit-transform: translateY(18px) scale(1, .9) rotate(45deg);
+							transform: translateY(18px) scale(1, .9) rotate(45deg);
+					border-bottom-right-radius: 40px;
+				}
+				75% {
+					-webkit-transform: translateY(9px) rotate(67.5deg);
+							transform: translateY(9px) rotate(67.5deg);
+				}
+				100% {
+					-webkit-transform: translateY(0) rotate(90deg);
+							transform: translateY(0) rotate(90deg);
+				}
+			}
 
-	<div id="app">
-        hello ziwen
-    </div>
+			@keyframes cube-animate {
+				17% {
+					border-bottom-right-radius: 3px;
+				}
+				25% {
+					-webkit-transform: translateY(9px) rotate(22.5deg);
+							transform: translateY(9px) rotate(22.5deg);
+				}
+				50% {
+					-webkit-transform: translateY(18px) scale(1, .9) rotate(45deg);
+							transform: translateY(18px) scale(1, .9) rotate(45deg);
+					border-bottom-right-radius: 40px;
+				}
+				75% {
+					-webkit-transform: translateY(9px) rotate(67.5deg);
+							transform: translateY(9px) rotate(67.5deg);
+				}
+				100% {
+					-webkit-transform: translateY(0) rotate(90deg);
+							transform: translateY(0) rotate(90deg);
+				}
+			}
 
-	<!-- <base href="/"> -->
+			@-webkit-keyframes cube-shadow {
+				0%, 100% {
+					-webkit-transform: scale(1, 1);
+							transform: scale(1, 1);
+				}
+				50% {
+					-webkit-transform: scale(1.2, 1);
+							transform: scale(1.2, 1);
+				}
+			}
 
-</body>
-
-</html>
+			@keyframes cube-shadow {
+				0%, 100% {
+					-webkit-transform: scale(1, 1);
+							transform: scale(1, 1);
+				}
+				50% {
+					-webkit-transform: scale(1.2, 1);
+							transform: scale(1.2, 1);
+				}
+			}</style><link rel="stylesheet" href="https://at.alicdn.com/t/font_1334574_v4jptts18ig.css"><script src="https://webapi.amap.com/maps?v=1.4.15&key=94d8aeeff7286259328bd1dcfff7d77b"></script></head><body><base href="./"><div id="app"></div><script id="vertexShader" type="x-shader/x-vertex">varying vec3 vNormal;
+			varying vec3 vPositionNormal;
+			void main() 
+			{
+			vNormal = normalize( normalMatrix * normal ); // 转换到视图空间
+			vPositionNormal = normalize(( modelViewMatrix * vec4(position, 1.0) ).xyz);
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+			}</script><script id="fragmentShader" type="x-shader/x-fragment">uniform vec3 glowColor;
+			uniform float b;
+			uniform float p;
+			uniform float s;
+			varying vec3 vNormal;
+			varying vec3 vPositionNormal;
+			void main() 
+			{
+			float a = pow( b + s * abs(dot(vNormal, vPositionNormal)), p );
+			gl_FragColor = vec4( glowColor, a );
+			}</script><script src="1909061535/static/js/chuneng-bigData.js"></script></body></html>
