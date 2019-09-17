@@ -52,6 +52,8 @@ entryObj['wen'] = [path.join(__dirname, "../src", "main.js")];
 
 module.exports = ({ ENV }) => {
     // console.log(process.env.NODE_ENV);
+
+    console.log(ENV)
     return {
         // devtool: false,
         devtool: "inline-source-map",
@@ -127,11 +129,11 @@ module.exports = ({ ENV }) => {
         // ['babel-polyfill', buildObject.entryFile],
         output: {
 
-            path: path.resolve(__dirname, '../dist', ENV === 'DEVELOPMENT' ? 'dev' : '.'),
+            path: path.resolve(__dirname, '../dist', '/'),
             filename:  ENV === 'DEVELOPMENT' ? 'static/js/common.js' : assetsPath('js/[name].js'),
             chunkFilename: assetsPath("js/[id].js"),
             // publicPath: `/dist/${nowTime()}/`
-            publicPath: ENV === 'DEVELOPMENT' ? '/' : '.'
+            publicPath: '/'
 
         },
         module: {

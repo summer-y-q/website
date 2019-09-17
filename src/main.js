@@ -1,6 +1,4 @@
-
-
-
+import '@/assets/stylesheets/index.scss';
 
 import React from 'react';
 
