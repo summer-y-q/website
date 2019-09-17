@@ -10,26 +10,15 @@ const path = require("path");
 const fs = require("fs");
 const process = require("process");
 const child_process = require("child_process");
-// module in use from third party
 const webpack = require("webpack");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ProgressBarPlugin = require("progress-bar-webpack-plugin");
-// const TerserPlugin = require('terser-webpack-plugin');
 const cheerio = require("cheerio");
-// const files = fs.readFileSync(path.join(__dirname, '..', 'code.html')).toString();
 
-// const $ = cheerio.load(files);
-// $('#code').addClass('welcome')
-// console.log(_co.data('env'));
-
-// const MinifyPlugin = require("babel-minify-webpack-plugin");
 
 const CopyPlugin = require("copy-webpack-plugin");
 
-// const MinifyPlugin = require("babel-minify-webpack-plugin");
 const entryObj = {};
 const VERSION = nowTime();
 const GIT_HASH = child_process
@@ -37,52 +26,27 @@ const GIT_HASH = child_process
     .toString()
     .slice(0, 7);
 
-// try {
-// fs.readFile(path.join(__dirname, '../static/build.version'), 'utf8', (err, data)=> {
-//     if(err) throw err;
-
-//     console.log(data);
-// });
-const buildVersionFile = fs
-    .readFileSync(path.join(__dirname, "../static/build.version"), "utf8")
-    .toString();
-// console.log(typeof buildVersionFile)
-
-// } catch(error) {
-//     console.log(error);
-// }
-
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-    .BundleAnalyzerPlugin;
 
 // variables
-const PROJECT_INFO = require("../config/index.js");
+// const PROJECT_INFO = require("../config/index.js");
 
-let BUILD_OBJECT = PROJECT_INFO.config.projects.filter(x => {
-    if (x.name === PROJECT_INFO.config.dev.name) {
-        return x;
-    }
-})[0];
+// let BUILD_OBJECT = PROJECT_INFO.config.projects.filter(x => {
+//     if (x.name === PROJECT_INFO.config.dev.name) {
+//         return x;
+//     }
+// })[0];
 
-// let OBJECT_EXTENDS = require(`../config/projects/${BUILD_OBJECT.name}.json`);
 
-BUILD_OBJECT = require(`../config/projects/${BUILD_OBJECT.name}.json`);
+// BUILD_OBJECT = require(`../config/projects/${BUILD_OBJECT.name}.json`);
 
-BUILD_OBJECT = {
-    ...BUILD_OBJECT,
-    version: BUILD_OBJECT.version,
-    hash: GIT_HASH,
-    BUILD_STRING: buildVersionFile
-};
+// BUILD_OBJECT = {
+//     ...BUILD_OBJECT,
+//     version: BUILD_OBJECT.version,
+//     hash: GIT_HASH,
+//     BUILD_STRING: buildVersionFile
+// };
 
-// console.log(BUILD_OBJECT.name + '...............');
-// console.log(BUILD_OBJECT.name + 'dasfdsakljlfkdsajklfkjlassdjkl');
-
-// const PACKAGE_JSON = require(path.join(__dirname, '../package.json'));
-// console.log(entryObj[buildObj.config.dev["name"]] + '............');
-
-// entryObj[buildObj.config.dev["name"]] = ['@babel/polyfill', path.join(__dirname, '../src', buildObj.config.dev["path"])]
-entryObj[BUILD_OBJECT.name] = [path.join(__dirname, "../src", "main.js")];
+entryObj['wen'] = [path.join(__dirname, "../src", "main.js")];
 
 // const ENV_OBJECT = { apiInfo: BUILD_OBJECT.apiInfo }
 
@@ -162,36 +126,17 @@ module.exports = ({ ENV }) => {
 
         // ['babel-polyfill', buildObject.entryFile],
         output: {
-            path: path.resolve(
-                __dirname,
-                "../dist",
-                ENV === "DEVELOPMENT" ? "dev" : VERSION
-            ),
-            filename:
-                ENV === "DEVELOPMENT"
-                    ? "static/js/common.js"
-                    : assetsPath("js/[name].js"),
+
+            path: path.resolve(__dirname, '../dist', ENV === 'DEVELOPMENT' ? 'dev' : '.'),
+            filename:  ENV === 'DEVELOPMENT' ? 'static/js/common.js' : assetsPath('js/[name].js'),
             chunkFilename: assetsPath("js/[id].js"),
             // publicPath: `/dist/${nowTime()}/`
-            publicPath: ENV === "DEVELOPMENT" ? "/dist/dev/" : VERSION
+            publicPath: ENV === 'DEVELOPMENT' ? '/' : '.'
+
         },
         module: {
             rules: [
-                {
-                    test: /\.(ts|tsx)?$/,
-                    use: "awesome-typescript-loader"
-                    // exclude: /node_modules/
-                },
-                {
-                    test: /\.vue$/,
-                    loader: "vue-loader",
-                    options: {
-                        loaders: {
-                            js: "babel-loader",
-                            css: MiniCssExtractPlugin.loader
-                        }
-                    }
-                },
+               
                 {
                     test: /\.(js|jsx)$/,
                     exclude: /node_modules/,
@@ -204,10 +149,6 @@ module.exports = ({ ENV }) => {
                             }
                         }
                     ]
-                },
-                {
-                    test: /\.styl(us)?$/,
-                    use: ["vue-style-loader", "css-loader", "stylus-loader"]
                 },
                 {
                     test: /\.(css|scss)$/,
@@ -239,6 +180,8 @@ module.exports = ({ ENV }) => {
                     ]
                     // exclude: /node_modules/,
 
+
+                    
                     // oneOf: [
                     //     //只对module生效
                     //     postcssModuleCompiler(/module/),
@@ -301,7 +244,6 @@ module.exports = ({ ENV }) => {
                 ".tsx",
                 ".json",
                 ".scss",
-                ".vue"
             ],
             alias: {
                 // ENTRY_DIR: path.resolve(__dirname, '..'),
@@ -309,7 +251,7 @@ module.exports = ({ ENV }) => {
                 "@": path.resolve(__dirname, "..", "src"),
                 // 'compressor': 'compressorjs/dist/compressor.esm.js',
                 // app: path.resolve(componentDir, 'app')
-                vue$: "vue/dist/vue.esm.js" // 用 webpack 1 时需用 'vue/dist/vue.common.js'
+                // vue$: "vue/dist/vue.esm.js" // 用 webpack 1 时需用 'vue/dist/vue.common.js'
                 // 'element-ui': path.resolve(__dirname, '..', 'node_modules/element-ui/lib'),
                 // 'element-ui/lib/theme-chalk/index.css': path.join(__dirname, '..', 'node_modules/element-ui/lib/theme-chalk/index.css'),
 
@@ -319,11 +261,7 @@ module.exports = ({ ENV }) => {
             },
             modules: [
                 path.resolve(__dirname, "..", "node_modules"),
-                path.resolve(
-                    __dirname,
-                    "..",
-                    "node_modules/element-ui/lib/theme-chalk"
-                ),
+               
                 path.resolve(__dirname, "..", "src/assets/css")
                 // path.join(__dirname, projectName, buildJson.config.build.entryPath)
             ]
@@ -359,40 +297,23 @@ function getPluginArray(ENV) {
               // }),
               // new UglifyJSPlugin(),
               // new UglifyJSPlugin(),
-              new CopyPlugin([{ from: path.join(__dirname, '../static/ele-bin'), to: "../" }]),
+            //   new CopyPlugin([{ from: path.join(__dirname, '../static/ele-bin'), to: "../" }]),
 
               new webpack.HotModuleReplacementPlugin(),
 
               new webpack.NamedModulesPlugin(),
 
-              new HtmlWebpackPlugin({
-                  title: BUILD_OBJECT.title,
-                  inject: true,
-                  version: VERSION,
-                  // favicon: {
-                  //     icon: `${nowTime()}/static/img/favicon.ico`
-                  // },
-                  // hash: true,
-                  // inject: false,
-                  // filename: path.join(__dirname, '../dist/index.html'),
-                  filename: path.join(__dirname, "../dist/index.html"),
-                  template: path.join(
-                      __dirname,
-                      "../static/sites/common/bundle.html"
-                  )
-                  // chunksSortMode: 'none'
-              }),
-              new VueLoaderPlugin(),
+     
               new ProgressBarPlugin(),
               new webpack.HashedModuleIdsPlugin(),
               new webpack.optimize.ModuleConcatenationPlugin(),
               new webpack.DefinePlugin({
                   // ENV: JSON.stringify("production"),
-                  ENV_OBJECT: JSON.stringify({ ...BUILD_OBJECT }),
+                //   ENV_OBJECT: JSON.stringify({ ...BUILD_OBJECT }),
                   ENV: JSON.stringify(ENV),
-                  MODULES_IMPORT: JSON.stringify(
-                      require(`../config/module/${BUILD_OBJECT.name}.json`)
-                  )
+                //   MODULES_IMPORT: JSON.stringify(
+                //       require(`../config/module/${BUILD_OBJECT.name}.json`)
+                //   )
                   // SERVICE_URL: JSON.stringify(buildObj.config.stringToHtmls.devStr),
                   // 'process.env.NODE_ENV': JSON.stringify("development"),
               }),
@@ -407,7 +328,7 @@ function getPluginArray(ENV) {
                   axios: "axios",
                   moment: "moment",
                   ReactRedux: "react-redux",
-                  THREE: "three/build/three.min.js"
+                //   THREE: "three/build/three.min.js"
 
                   // ...
               })
@@ -416,62 +337,6 @@ function getPluginArray(ENV) {
               //     { from: '../static/js/Util.js', to: '../dist' + BUILD_OBJECT.version }
               // ])
           ]);
-}
-
-function postcssModuleCompiler(txt) {
-    return {
-        resourceQuery: txt,
-        use: [
-            "vue-style-loader",
-            // MiniCssExtractPlugin.loader,
-            // 'style-loader',
-            {
-                loader: "css-loader",
-                options: {
-                    importLoaders: 1,
-                    modules: !!txt ? true : false
-                }
-            },
-            {
-                loader: "postcss-loader",
-                // exclude: /node_modules/,
-                options: {
-                    ident: "postcss",
-                    parser: require("postcss-scss"),
-                    plugins: [
-                        require("precss")(),
-                        require("postcss-cssnext")({
-                            // warnForDeprecations: false,
-                            warnForDuplicates: false,
-                            features: {
-                                customProperties: {
-                                    preserve: false,
-                                    variables: {
-                                        themeColor: BUILD_OBJECT.feature.theme
-                                            .element.color
-                                            ? BUILD_OBJECT.feature.theme.element
-                                                  .color
-                                            : "#3e8ef7",
-                                        projectName: BUILD_OBJECT.name
-
-                                        //    themeColor: BUILD_OBJECT.theme.element.color ? BUILD_OBJECT.theme.element.color : '#3e8ef7'
-                                    }
-                                }
-                                // variables: {
-                                //     'themeColor': BUILD_OBJECT.theme.element.color ? BUILD_OBJECT.theme.element.color : '#3e8ef7'
-                                //     // 'themeColor
-                                // }
-                            }
-                        }),
-                        require("postcss-custom-properties"),
-                        require("postcss-color-function"),
-                        require("postcss-color-mix"),
-                        require("postcss-preset-env")()
-                    ]
-                }
-            }
-        ]
-    };
 }
 
 function resolve(dir) {
