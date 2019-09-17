@@ -129,7 +129,7 @@ module.exports = ({ ENV }) => {
         // ['babel-polyfill', buildObject.entryFile],
         output: {
 
-            path: path.resolve(__dirname, '../dist', '/'),
+            path: path.resolve(__dirname, '../dist', './'),
             filename:  ENV === 'DEVELOPMENT' ? 'static/js/common.js' : assetsPath('js/[name].js'),
             chunkFilename: assetsPath("js/[id].js"),
             // publicPath: `/dist/${nowTime()}/`
