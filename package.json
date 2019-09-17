@@ -32,6 +32,7 @@
 		"lazyload": "^1.8.4",
 		"lodash": "^4.17.11",
 		"moment": "^2.24.0",
+		"normalize.css": "^8.0.1",
 		"ora": "^3.4.0",
 		"react": "^16.8.6",
 		"react-animations": "^1.0.0",

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width; initial-scale=0.9; maximum-scale=0.9; minimum-scale=0.9;" /> -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="referrer" content="no-referrer"/>
+    <title>深业智慧·深业泰然大厦</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .project-wrapper {
+            display: flex;
+            flex: 1;
+            height: 100%;
+            flex-direction: column;
+            /* align-items: center; */
+            list-style: none;
+        }
+
+        li {
+            margin: 30px;
+        }
+
+        a {
+            padding: 8px 20px;
+            border-radius: 5px;
+            color: #fff;
+            background: #9f00ff7d;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background: #9f00ffb3;
+        }
+
+    </style>
+	<script src="https://webapi.amap.com/maps?v=1.4.15&key=94d8aeeff7286259328bd1dcfff7d77b"></script> 
+
+</head>
+<body>
+        <base href="./">
+
+    <ul class="project-wrapper">
+        {% for project in projects %}
+            <li>
+                <a href="/{{project.dev}}">{{project.dev}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+		varying vec3 vNormal;
+		varying vec3 vPositionNormal;
+		void main() 
+		{
+		vNormal = normalize( normalMatrix * normal ); // 转换到视图空间
+		vPositionNormal = normalize(( modelViewMatrix * vec4(position, 1.0) ).xyz);
+		gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+		}
+	</script>
+
+	<script id="fragmentShader" type="x-shader/x-fragment">
+		uniform vec3 glowColor;
+		uniform float b;
+		uniform float p;
+		uniform float s;
+		varying vec3 vNormal;
+		varying vec3 vPositionNormal;
+		void main() 
+		{
+		float a = pow( b + s * abs(dot(vNormal, vPositionNormal)), p );
+		gl_FragColor = vec4( glowColor, a );
+		}
+	</script>
+</body>
+</html>
