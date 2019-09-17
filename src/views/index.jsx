@@ -15,19 +15,7 @@ class App extends React.Component {
         return (
             <Router>
                 <div className="root-wrapper">
-                <div className="text-content">
-            <h1>WELCOME TO</h1>
-            <h2>MY CHANNEL</h2>
-
-            <article>
-                <p>I'm Summer.</p>
-                <p>A desiner in ShenZhen.</p>
-                <p>I like to do some interesting</p>
-                <p>designs in my free time</p>
-                <p>Oh I also like photography and</p>
-                <p>diving.</p>
-            </article>
-        </div>
+                    
                     <Route path="/" exact component={ loadDymaticModule('./components/home') } />
                     {/* <Route path="/" exact component={lazy(() => import('./components/home'))} /> */}
                 </div>
