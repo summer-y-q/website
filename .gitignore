@@ -3,5 +3,4 @@ node_modules
 yarn-error.log
 yarn.lock
 
-src/save.js
-src/save_2.js
+src/save
