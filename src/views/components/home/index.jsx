@@ -18,11 +18,11 @@ let TextContentSummary = () => {
 
             <article>
                 <p>I'm Summer.</p>
-                <p>A desiner in ShenZhen.</p>
+                {/* <p>A desiner in ShenZhen.</p>
                 <p>I like to do some interesting</p>
                 <p>designs in my free time</p>
                 <p>Oh I also like photography and</p>
-                <p>diving.</p>
+                <p>diving.</p> */}
             </article>
         </div>
     )

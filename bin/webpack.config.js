@@ -130,7 +130,7 @@ module.exports = ({ ENV }) => {
         output: {
 
             path: path.resolve(__dirname, '../dist', './'),
-            filename:  ENV === 'DEVELOPMENT' ? 'static/js/common.js' : assetsPath('js/[name].js'),
+            filename:  ENV === 'DEVELOPMENT' ? '[name].js' : assetsPath('js/[name].js'),
             chunkFilename: assetsPath("js/[id].js"),
             // publicPath: `/dist/${nowTime()}/`
             publicPath: '/'
@@ -333,6 +333,12 @@ function getPluginArray(ENV) {
                 //   THREE: "three/build/three.min.js"
 
                   // ...
+              }),
+              new HtmlWebpackPlugin({
+                template: 'index.html',
+                // title: 'HTML Webpack Plugin',
+                ENV: ENV,
+                inject: false
               })
               // new MinifyPlugin({})
               // new CopyPlugin([
