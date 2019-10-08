@@ -335,11 +335,23 @@ function getPluginArray(ENV) {
                   // ...
               }),
               new HtmlWebpackPlugin({
-                template: 'index.html',
-                // title: 'HTML Webpack Plugin',
+                // title: BUILD_OBJECT.title,
+                inject: false,
+                version: VERSION,
                 ENV: ENV,
-                inject: false
-              })
+                // favicon: {
+                //     icon: `${nowTime()}/static/img/favicon.ico`
+                // },
+                // hash: true,
+                // inject: false,
+                // filename: path.join(__dirname, '../dist/index.html'),
+                filename: path.join(__dirname, "../index.html"),
+                template: path.join(
+                    __dirname,
+                    "../static/sites/index.html"
+                )
+                // chunksSortMode: 'none'
+            }),
               // new MinifyPlugin({})
               // new CopyPlugin([
               //     { from: '../static/js/Util.js', to: '../dist' + BUILD_OBJECT.version }

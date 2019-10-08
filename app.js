@@ -75,7 +75,7 @@ function webpackBundler() {
             if (err) throw err;
 
             const devServerOptions = {
-                contentBase: "./",
+                contentBase: "./static/sites",
                 publicPath: "/",
                 hot: true,
                 stats: { colors: true },
