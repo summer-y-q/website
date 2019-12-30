@@ -9,5 +9,9 @@ import App from './views';
 
 ReactDOM.render(
     <App />,
+    // <Chartz />,
+
     document.getElementById('app')
 )
+
+

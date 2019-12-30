@@ -335,7 +335,7 @@ function getPluginArray(ENV) {
                   // ...
               }),
               new HtmlWebpackPlugin({
-                // title: BUILD_OBJECT.title,
+                title: "ziwen's homePage",
                 inject: false,
                 version: VERSION,
                 ENV: ENV,
