@@ -474,6 +474,11 @@ class Chartz extends React.Component {
 class Gojs extends React.Component {
 
     goJSInitor() {
+        function highlightLink(link, show) {
+            link.isHighlighted = show;
+            link.fromNode.isHighlighted = show;
+            link.toNode.isHighlighted = show;
+        }
         let myDiagram;
         init();
         function init() {
@@ -492,16 +497,12 @@ class Gojs extends React.Component {
                             $(go.LayeredDigraphLayout,
                                 {
                                     direction: 90,
-                                    layerSpacing: 10,
-                                    columnSpacing: 15,
+                                    layerSpacing: 90,
+                                    columnSpacing: 30,
                                     setsPortSpots: false
                                 })
                     });
-            function highlightLink(link, show) {
-                link.isHighlighted = show;
-                link.fromNode.isHighlighted = show;
-                link.toNode.isHighlighted = show;
-            }
+          
             // replace the default Node template in the nodeTemplateMap
 
 
@@ -527,7 +528,17 @@ class Gojs extends React.Component {
                 $(go.Node, "Auto",
                     new go.Binding("location", "loc", go.Point.parse),
 
-                    $(go.Shape, "RoundedRectangle", { fill: "lightgray" }),
+                    $(go.Shape, "RoundedRectangle", 
+                        { 
+                            fill: "lightgray",
+                            portId: "",
+                            fromLinkable: true,
+                            toLinkable: true,
+                            fromSpot: go.Spot.AllSides,
+                            toSpot: go.Spot.AllSides,
+                            cursor: "pointer"
+                        }
+                    ),
                     $(go.TextBlock,  // the text label
                         {
                             name: "TEXTBLOCK",
@@ -570,26 +581,32 @@ class Gojs extends React.Component {
             myDiagram.linkTemplate =
                 $(go.Link,  // the whole link panel
                     go.Link.Orthogonal,
+                    // go.Link.Bezier,
+                    new go.Binding("fromEndSegmentLength", "curviness"),
+                    new go.Binding("toEndSegmentLength", "curviness"),
                     $(go.Shape,
                         new go.Binding("stroke", "isHighlighted",
                             function (h, shape) { return h ? 'blue' : 'black'; })
                             .ofObject(),
 
                         new go.Binding("strokeWidth", "isHighlighted",
-                            function (h) { return h ? 3 : 1; })
+                            function (h) { return h ? 2 : 1; })
                             .ofObject(),
                     ),
+                 
                     $(go.Shape,
-                        { toArrow: "Standard" },
+                        { 
+                            toArrow: "",
+                        },
                         new go.Binding("stroke", "isHighlighted",
                             function (h, shape) { return h ? 'blue' : 'black'; })
                             .ofObject(),
                         new go.Binding("fill", "isHighlighted",
                             function (h, shape) { return h ? 'blue' : 'black'; })
                             .ofObject(),
-                        // new go.Binding("toArrow", "isHighlighted",
-                        //     function (h) { return h ? 'Standard' : 'figure'; })
-                        // .ofObject()
+                        new go.Binding("toArrow", "isHighlighted",
+                            function (h) { return h ? 'Standard' : ''; })
+                        .ofObject()
                     ),
                     $(go.Panel, "Auto",
                         $(go.Shape,  // the label background, which becomes transparent around the edges
@@ -611,24 +628,28 @@ class Gojs extends React.Component {
                                 function (h, shape) { return h ? 'blue' : 'black'; })
                                 .ofObject(),
                             new go.Binding("font", "isHighlighted",
-                                function (h, shape) { return h ? '12pt helvetica, arial, sans-serif' : '9pt helvetica, arial, sans-serif'; })
+                                function (h, shape) { return h ? '9pt helvetica, arial, sans-serif' : '9pt helvetica, arial, sans-serif'; })
                                 .ofObject(),
 
                             new go.Binding("text").makeTwoWay())
                     ),
-
+                     
 
                     {
-                        toShortLength: 2,
-                        selectionAdornmentTemplate:
-                            $(go.Adornment,
-                                $(go.Shape,
-                                    { isPanelMain: true, stroke: "dodgerblue", strokeWidth: 8 }),
-                                $(go.Shape,
-                                    { toArrow: "Standard", fill: "dodgerblue", stroke: null, scale: 2.5 })
-                            ),// end Adornment
+                        fromShortLength: 20,
+                        // fromShortLength: 0,
+                        // toShortLength: 0,
+                        // selectionAdornmentTemplate:
+                        //     $(go.Adornment,
+                        //         $(go.Shape,
+                        //             { isPanelMain: true, stroke: "dodgerblue", strokeWidth: 8 }),
+                        //         $(go.Shape,
+                        //             { toArrow: "Standard", fill: "dodgerblue", stroke: null, scale: 2.5 })
+                        //     ),// end Adornment
                         routing: go.Link.AvoidsNodes,
+                        corner: 10,
                         curve: go.Link.JumpOver,
+                        // fromSpot: go.Spot.Left,
                         // routing: go.Link.Normal,
                         // // curve: go.Link.JumpOver,
                         // curve: go.Link.Bezier,
@@ -636,6 +657,8 @@ class Gojs extends React.Component {
                         selectionAdorned: false,
                         relinkableFrom: true,
                         relinkableTo: true,
+                        reshapable: true,
+                        resegmentable: true,
                         mouseEnter: function (e, link) { highlightLink(link, true); },
                         mouseLeave: function (e, link) { highlightLink(link, false); }
                     },
@@ -708,6 +731,7 @@ class Gojs extends React.Component {
 
             var linkDataArray = [
                 { text: '50%', from: 0, to: 1 },
+                { text: '50%', from: 1, to: 0 },
                 { text: '50%', from: 1, to: 2 },
 
                 { text: '50%', from: 2, to: 3 },
@@ -900,386 +924,188 @@ class Gojs extends React.Component {
         // myDiagram.model = myModel;
 
     }
-
+    
 
     d3BubbleInitor() {
-        // Set paths and options
-        const guides = {
-            General: {
-                'Legend Rhony': {
-                    data: 'https://raw.githubusercontent.com/sho-87/rok-data/master/commander_pairings/data/legend_rhony.csv',
-                    url: 'https://www.youtube.com/watch?v=gSY6CfG2vg4',
-                    strength: -3000,
-                    distance: 500,
-                    radius: 1.5
-                },
-                detectiveG: {
-                    data: 'https://raw.githubusercontent.com/sho-87/rok-data/master/commander_pairings/data/detectiveG.csv',
-                    url:
-                        'https://docs.google.com/spreadsheets/d/1YqsYjNAxzHHODfzJoPhN3kzyG9xwGvK7NmoK1e3ADdk',
-                    strength: -1500,
-                    distance: 500,
-                    radius: 2
-                }
-            },
-            Garrison: {
-                'Legend Rhony': {
-                    data: 'https://raw.githubusercontent.com/sho-87/rok-data/master/commander_pairings/data/legend_rhony_garrison.csv',
-                    url: 'https://www.youtube.com/watch?v=YhxwVI6j1mI',
-                    strength: -3000,
-                    distance: 500,
-                    radius: 3
-                }
-            }
-        };
-
-        const commanders = 'https://raw.githubusercontent.com/sho-87/rok-data/master/commander_pairings/commanders.json';
-
-        // Set initial options
-        const options_type = Object.keys(guides);
-        const select_type = document.getElementById('dropdown_type');
-        const select_guide = document.getElementById('dropdown_guide');
-
-        // for (let i = 0; i < options_type.length; i++) {
-        //     let opt = document.createElement('option');
-        //     opt.textContent = options_type[i];
-        //     select_type.appendChild(opt);
-        // }
-
-        changeType();
-
-        // // Functions for guide selection
-        function changeType() {
-            select_guide.length = 0;
-
-            let guide_list = Object.keys(guides[select_type.value]);
-
-            // for (let i = 0; i < guide_list.length; i++) {
-            //     let opt = document.createElement('option');
-            //     opt.textContent = guide_list[i];
-            //     select_guide.appendChild(opt);
-            // }
-
-            changeGuide();
-        }
-
-        function changeGuide() {
-            let guide_type = select_type.value;
-            let guide = select_guide.value;
-
-            let a = document.getElementById('link');
-            a.href = guides[guide_type][guide].url;
-
-            loadGraph(
-                guides[guide_type][guide].data,
-                guides[guide_type][guide].strength,
-                guides[guide_type][guide].distance,
-                guides[guide_type][guide].radius
-            );
-        }
-
-        // Functions for graph generation
-        function loadGraph(data, strength, distance, radius) {
-            const svg = d3.select('svg'),
-                width = +svg.attr('width'),
-                height = +svg.attr('height');
-
-            svg.selectAll('*').remove();
-
-            const zoom = d3
-                .zoom()
-                .scaleExtent([-8 / 2, 4])
-                .on('zoom', zoomed);
-
-            svg.call(zoom);
-
-            const g = svg.append('g');
-
-            const color = d3
-                .scaleOrdinal()
-                .domain(['Legendary', 'Epic', 'Elite', 'Advanced'])
-                .range(['#ff9b00', '#ac41c2', '#058cc3', '#2d9830']);
-
-            const tooltip = d3.select('#info').attr('class', 'tooltip');
-
-            const simulation = d3
-                .forceSimulation()
-                .force('link', d3.forceLink().id(d => d.id))
-                .force(
-                    'charge',
-                    d3
-                        .forceManyBody()
-                        .strength(strength)
-                        .distanceMax([distance])
-                )
-                .force('center', d3.forceCenter(width / 2, height / 2));
-
-            // Read data from files
-            d3.queue()
-                .defer(d3.json, commanders)
-                .defer(d3.csv, data)
-                .await(function (error, commanders, links) {
-                    if (error) {
-                        console.error(error);
-                    } else {
-                        links = links.map(d => ({
-                            source: d.primary,
-                            target: d.secondary,
-                            rank: d.rank
-                        }));
-
-                        // calculate node weights (number of links)
-                        commanders.nodes.forEach(n => {
-                            n.weight = (function () {
-                                let weight = 0;
-                                links.forEach(l => {
-                                    if ((n.id === l.source) | (n.id === l.target)) {
-                                        weight++;
-                                    }
-                                });
-                                return weight;
-                            })();
-                        });
-
-                        // links
-                        const link = g
-                            .attr('class', 'links')
-                            .selectAll('line')
-                            .data(links)
-                            .enter()
-                            .append('line')
-                            .attr('stroke-width', d => (1 / d.rank) * 2.3);
-
-                        // nodes
-                        const node = g
-                            .selectAll('.node')
-                            .data(commanders.nodes)
-                            .enter()
-                            .append('g')
-                            .attr('class', 'nodes')
-                            .filter(d => {
-                                if (d.weight != 0) {
-                                    return this;
-                                }
-                            })
-                            .call(
-                                d3
-                                    .drag()
-                                    .on('start', dragstarted)
-                                    .on('drag', dragged)
-                                    .on('end', dragended)
-                            );
-
-                        node
-                            .append('circle')
-                            .attr('r', d => d.weight * radius)
-                            .attr('fill', d => color(d.group))
-            //                 .on('mouseover.tooltip', function (d) {
-            //                     // Generate tooltip text
-            //                     info = `<strong>${d.id}</strong><br/><span class=${d.group}>${
-            //                         d.group
-            //                         }</span><br>Versatility (# of pairs): ${d.weight}`;
-
-            //                     table_primary = `<p><table id='tooltipTablePrimary' border=1>`;
-            //                     table_secondary = `<p><table id='tooltipTableSecondary' border=1>`;
-
-            //                     header = `<tr style="font-weight:bold">
-            //   <td class='primary' width='45%'>Primary</td>
-            //   <td class='secondary' width='45%'>Secondary</td>
-            //   <td>Rank</td></tr>`;
-
-            //                     rank_sum = 0;
-            //                     rows_primary = '';
-            //                     rows_secondary = '';
-
-            //                     links.forEach(pair => {
-            //                         if (d.id === pair.source.id) {
-            //                             rank_sum += Number(pair.rank);
-            //                             rows_primary += `<tr><td style='font-weight:bold'>${
-            //                                 pair.source.id
-            //                                 }</td><td>${pair.target.id}</td><td>${pair.rank}</td></tr>`;
-            //                         } else if (d.id === pair.target.id) {
-            //                             rank_sum += Number(pair.rank);
-            //                             rows_secondary += `<tr><td>${
-            //                                 pair.source.id
-            //                                 }</td><td style='font-weight:bold'>${pair.target.id}</td><td>${
-            //                                 pair.rank
-            //                                 }</td></tr>`;
-            //                         }
-            //                     });
-
-            //                     table_primary += header + rows_primary + '</table>';
-            //                     table_secondary += header + rows_secondary + '</table>';
-
-            //                     tables_combined = '';
-            //                     if (rows_primary !== '') {
-            //                         tables_combined += table_primary;
-            //                     }
-
-            //                     if (rows_secondary !== '') {
-            //                         tables_combined += table_secondary;
-            //                     }
-
-            //                     tooltip
-            //                         .transition()
-            //                         .duration(300)
-            //                         .style('opacity', 1);
-            //                     tooltip.html(info + tables_combined);
-
-            //                     sortTable('tooltipTablePrimary');
-            //                     sortTable('tooltipTableSecondary');
-            //                 })
-            //                 .on('mouseout.tooltip', function () {
-            //                     tooltip
-            //                         .transition()
-            //                         .duration(100)
-            //                         .style('opacity', 0);
-            //                 })
-            //                 .on('mouseover.fade', fade(0.05))
-            //                 .on('mouseout.fade', fade(1));
-
-            //             // node labels
-                        node
-                            .append('text')
-                            .text(d => d.id)
-                            .attr('class', 'labels')
-                            .attr('x', 0)
-                            .attr('y', 0);
-
-                        simulation.nodes(commanders.nodes).on('tick', ticked);
-                        simulation.force('link').links(links);
-
-                        function ticked() {
-                            // zoom to bounding box of nodes
-                            if (this.alpha() > 0.04) {
-                                // set up zoom transform
-                                var xExtent = d3.extent(node.data(), function (d) {
-                                    return d.x + 100;
-                                });
-                                var yExtent = d3.extent(node.data(), function (d) {
-                                    return d.y;
-                                });
-
-                                // get scales
-                                var xScale = (width / (xExtent[1] - xExtent[0])) * 0.75;
-                                var yScale = (height / (yExtent[1] - yExtent[0])) * 0.75;
-
-                                // get most restrictive scale
-                                var minScale = Math.min(xScale, yScale);
-
-                                if (minScale < 1) {
-                                    var transform = d3.zoomIdentity
-                                        .translate(width / 2, height / 2)
-                                        .scale(minScale)
-                                        .translate(
-                                            -(xExtent[0] + xExtent[1]) / 2,
-                                            -(yExtent[0] + yExtent[1]) / 2
-                                        );
-                                    svg.call(zoom.transform, transform);
-                                }
-                            } else {
-                                svg.attr('cursor', 'pointer');
-                                var check = false;
-                            }
-
-                            link
-                                .attr('x1', d => d.source.x)
-                                .attr('y1', d => d.source.y)
-                                .attr('x2', d => d.target.x)
-                                .attr('y2', d => d.target.y);
-
-                            node.attr('transform', d => `translate(${d.x},${d.y})`);
-                        }
-
-                        const linkedByIndex = {};
-                        links.forEach(d => {
-                            linkedByIndex[`${d.source.index},${d.target.index}`] = 1;
-                        });
-
-                        function isConnected(a, b) {
-                            return (
-                                linkedByIndex[`${a.index},${b.index}`] ||
-                                linkedByIndex[`${b.index},${a.index}`] ||
-                                a.index === b.index
-                            );
-                        }
-
-                        function fade(opacity) {
-                            return d => {
-                                node.style('stroke-opacity', function (o) {
-                                    const thisOpacity = isConnected(d, o) ? 1 : opacity;
-                                    this.setAttribute('fill-opacity', thisOpacity);
-                                    return thisOpacity;
-                                });
-
-                                link.style('stroke-opacity', o =>
-                                    o.source === d || o.target === d ? 1 : opacity
-                                );
-                            };
-                        }
-
-                        function sortTable(id) {
-                            var table, rows, switching, i, x, y, shouldSwitch;
-                            table = document.getElementById(id);
-                            switching = true;
-
-                            while (switching) {
-                                try {
-                                    rows = table.rows;
-                                } catch (err) {
-                                    return;
-                                }
-
-                                switching = false;
-
-                                for (i = 1; i < rows.length - 1; i++) {
-                                    shouldSwitch = false;
-
-                                    x = rows[i].getElementsByTagName('TD')[2];
-                                    y = rows[i + 1].getElementsByTagName('TD')[2];
-
-                                    if (Number(x.innerHTML) > Number(y.innerHTML)) {
-                                        shouldSwitch = true;
-                                        break;
-                                    }
-                                }
-                                if (shouldSwitch) {
-                                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                                    switching = true;
-                                }
-                            }
-                        }
-                    }
-                });
-
-            function dragstarted(d) {
-                if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            }
-
-            function dragged(d) {
-                d.fx = d3.event.x;
-                d.fy = d3.event.y;
-            }
-
-            function dragended(d) {
-                if (!d3.event.active) simulation.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
-            }
-
-            function zoomed() {
-                g.attr('transform', d3.event.transform);
-            }
-        }
-
+        const data = {
+            "name": "DT", "note": "Pack Layout Example", "children": [
+              
+              { "name": "AA", "note": "Dept.", "children": [ 
+                  { "name": "AP", "children": [
+                      { "name": "Calendar", "value": 100, "date": "2018-04-20" },
+                      { "name": "Calendar", "value": 100, "date": "2018-05-02" }
+                  ]}         
+                ]
+              },  
+              { "name": "HR", "note": "Dept.", "children": [ 
+                  { "name": "LB", "children": [
+                      { "name": "Directory", "value": 100, "date": "2018-09-28" }
+                  ]},
+                  { "name": "LF", "children": [
+                      { "name": "Holiday Schedule", "value": 100, "date": "2019-01-10" },
+                      { "name": "Employee Assistance", "value": 100, "date": "2019-06-20" }
+                  ]},     
+                ]
+              }, 
+              { "name": "IAP", "note": "Dept.", "children": [ 
+                  { "name": "JS", "children": [
+                      { "name": "Contact", "value": 100, "date": "2018-05-04" },
+                      { "name": "Contact", "value": 100, "date": "2018-05-09" },
+                      { "name": "Contact", "value": 100, "date": "2018-05-14" }
+                  ]}, 
+                  { "name": "MA", "children": [
+                      { "name": "Contact", "value": 100, "date": "2018-05-04" },
+                      { "name": "Contact", "value": 100, "date": "2018-05-09" },
+                      { "name": "Contact", "value": 100, "date": "2018-05-14" }
+                  ]}          
+                ]
+              },    
+              { "name": "IIT", "note": "Dept.", "children": [      
+                  { "name": "EF", "children": [
+                      { "name": "Policy", "value": 100, "date": "2018-05-01" }
+                  ]}, 
+                  { "name": "LL", "children": [
+                      { "name": "Stream", "value": 100, "date": "2018-05-17" }
+                  ]},  
+                  { "name": "MR", "children": [
+                      { "name": "Stream", "value": 100, "date": "2018-05-17" }
+                  ]},       
+                  { "name": "RK", "children": [
+                      { "name": "Flash", "value": 100, "date": "2017-12-07" },
+                      { "name": "Syllabi", "value": 100, "date": "2018-05-31" }
+                  ]},      
+                  { "name": "TS", "children": [ // support
+                      { "name": "Edge", "value": 100, "date": "2018-07-18" }
+                  ]} 
+                ]
+              },
+              { "name": "LA", "note": "Dept.", "children": [ 
+                  { "name": "BS", "children": [
+                      { "name": "Policies", "value": 100, "date": "2019-06-19" }
+                  ]}, 
+                  { "name": "DP", "children": [
+                      { "name": "Policies", "value": 100, "date": "2019-06-10" }
+                  ]}          
+                ]
+              },
+              { "name": "MPR", "note": "Dept.", "children": [    
+                  { "name": "AH", "children": [
+                      { "name": "Fire", "value": 100, "date": "2018-09-06" }
+                  ]}, 
+                  { "name": "CG", "children": [
+                      { "name": "App", "value": 100, "date": "2018-01-24" },
+                      { "name": "Fire", "value": 100, "date": "2018-09-06" },
+                      { "name": "Portal", "value": 100, "date": "2018-09-27" }
+                  ]}, 
+                  { "name": "DT", "children": [
+                      { "name": "Emergency", "value": 100, "date": "2018-09-11" }
+                  ]}, 
+                  { "name": "DW", "children": [
+                      { "name": "Emergency", "value": 100, "date": "2018-09-11" }
+                  ]}, 
+                  { "name": "JB", "children": [
+                      { "name": "DAM", "value": 100, "date": "2018-08-27" }
+                  ]},  
+                  { "name": "JH", "children": [
+                      { "name": "Grad App", "value": 100, "date": "2018-09-04" }
+                  ]},    
+                  { "name": "NH", "children": [
+                      { "name": "TDS", "value": 100, "date": "2019-06-20" }
+                  ]}, 
+                  { "name": "TB", "children": [
+                      { "name": "Screens", "value": 100, "date": "2018-08-02" },
+                      { "name": "Grad App", "value": 100, "date": "2018-09-04" },
+                      { "name": "Letterhead", "value": 100, "date": "2018-08-30" },
+                      { "name": "Fire", "value": 100, "date": "2018-09-06" },
+                      { "name": "Accomodations", "value": 100, "date": "2019-08-01" }
+                  ]},      
+                ]
+              },
+              { "name": "ORA", "note": "Dept.", "children": [      
+                  { "name": "SZ", "children": [
+                      { "name": "Net Price", "value": 100, "date": "2019-07-30" }
+                  ]}    
+                ]
+              },  
+              { "name": "SA", "note": "Dept.", "children": [      
+                  { "name": "JM", "children": [
+                      { "name": "PIN", "value": 100, "date": "2018-02-05" }
+                  ]},       
+                  { "name": "MR", "children": [
+                      { "name": "Chat", "value": 100, "date": "2018-04-30" },
+                      { "name": "Club", "value": 100, "date": "2018-09-05" },
+                      { "name": "Guide", "value": 100, "date": "2018-07-17" },
+                      { "name": "Open House", "value": 100, "date": "2019-05-10" },
+                      { "name": "Testing Centers", "value": 100, "date": "2019-05-13" },
+                      { "name": "Web Worksheet", "value": 100, "date": "2019-10-01" },
+                      { "name": "Tax Notification", "value": 100, "date": "2019-10-31" }  
+                  ]},      
+                ]
+              },    
+              { "name": "WDCE", "note": "Dept.", "children": [      
+                  { "name": "RS", "children": [
+                      { "name": "Training", "value": 100, "date": "2018-06-04" },
+                      { "name": "Advisors", "value": 100, "date": "2018-09-05" }
+                  ]},           
+                ]
+              }
+              
+            ]
+          };
+          
+          const packLayout = d3.pack()
+            .size([800, 800])
+            .padding(14);
+          
+          const rootNode = d3.hierarchy(data)
+          
+          rootNode.sum(function(d) {
+            return d.value;
+          });
+          
+          packLayout(rootNode);
+          
+          const nodes = d3.select('svg g')
+            .selectAll('g')
+            .data(rootNode.descendants())
+            .enter()
+            .append('g')
+            .attr('transform', function(d) {return 'translate(' + [d.x, d.y] + ')';})
+            .attr('class', 'g')
+          .attr("class", function(d) { return "node" + (!d.children ? " node--leaf" : d.depth ? "" : " node--root"); })
+          
+          nodes
+            .append('text')
+            .attr('dy', 6)
+            .attr('class', 'text')
+            .text(function(d) {
+             return d.children === undefined ? (d.data.name).charAt(0) : '';})
+          
+          nodes
+            .append('circle')
+            .attr('r', function(d) { return d.r; })
+            .attr('class', 'circle')
+          
+          const tooltip = d3.select('body').append('div')
+            .attr('class', 'tooltip')
+            .style('opacity', 0);
+          
+          nodes.selectAll('.circle')
+            .on('mouseover', (d) => {
+              tooltip.transition().duration(200).style('opacity', 0.9);
+              tooltip.html(`${(d.data.name)} </br>${d.data.date ? d.data.date : '' }`)
+              .style('left', `${d3.event.layerX}px`)
+              .style('top', `${(d3.event.layerY - 10)}px`);
+            })
+            .on('mouseout', () => tooltip.transition().duration(500).style('opacity', 0));
     }
+
+
 
     componentDidMount() {
 
-        // this.goJSInitor();
-        this.d3BubbleInitor();
+        this.goJSInitor();
+        // this.d3BubbleInitor();
     }
     tabSwitchor = (evt) => {
 
@@ -1296,30 +1122,11 @@ class Gojs extends React.Component {
                 </div>
 
 
+                <svg style={{ width:"1200px", height: "1000px" }} >
+                    <g></g>
+                </svg>
 
-                <div className="row">
-                    <div className="column">
-                        {/* <table>
-                            <tbody>
-
-                            <tr>
-                                <td>Type:</td>
-                                <td>Guide:</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><select id="dropdown_type" onChange={changeType()"></select></td>
-                                <td><select id="dropdown_guide" onChange="changeGuide()"></select></td>
-                                <td><a id="link" href="#" target="_blank">Link</a></td>
-                            </tr>
-                            </tbody>
-
-                        </table> */}
-
-                        <div id="info"></div>
-                    </div>
-                    <div className="column"><svg width="800" height="600"></svg></div>
-                </div>
+          
             </Fragment>
 
         )
