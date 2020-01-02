@@ -336,7 +336,7 @@ function getPluginArray(ENV) {
               }),
               new HtmlWebpackPlugin({
                 title: "ziwen's homePage",
-                inject: false,
+                inject: true,
                 version: VERSION,
                 ENV: ENV,
                 // favicon: {
