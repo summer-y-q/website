@@ -1,7 +1,7 @@
 require('./gojs.js');
 import React, { Component, Fragment, useEffect, useState } from 'react';
 import './style.scss';
-import bg_png from './sbp-login.png';
+// import bg_png from './sbp-login.png';
 let Home = () => {
     return (
         <div className="home-content">
@@ -1249,7 +1249,7 @@ let LoginTemplate = (props) => {
     return (
         <main className="login-main"
             style={{
-                backgroundImage: `url(${bg_png})`,
+                backgroundImage: `url(/sbp-login.png)`,
                 height: '100%',
                 width: '100%',
                 backgroundRepeat: 'no-repeat',
