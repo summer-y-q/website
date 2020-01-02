@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+require('./gojs.js');
+import React, { Component, Fragment, useEffect, useState } from 'react';
 import './style.scss';
 
 let Home = () => {
@@ -473,6 +474,11 @@ class Chartz extends React.Component {
 
 class Gojs extends React.Component {
 
+
+    state = {
+        hasVerified: false
+    }
+
     goJSInitor() {
         function highlightLink(link, show) {
             link.isHighlighted = show;
@@ -497,12 +503,13 @@ class Gojs extends React.Component {
                             $(go.LayeredDigraphLayout,
                                 {
                                     direction: 90,
-                                    layerSpacing: 90,
+                                    layerSpacing: 50,
                                     columnSpacing: 30,
                                     setsPortSpots: false
-                                })
+                                }
+                            )
                     });
-          
+
             // replace the default Node template in the nodeTemplateMap
 
 
@@ -528,8 +535,8 @@ class Gojs extends React.Component {
                 $(go.Node, "Auto",
                     new go.Binding("location", "loc", go.Point.parse),
 
-                    $(go.Shape, "RoundedRectangle", 
-                        { 
+                    $(go.Shape, "RoundedRectangle",
+                        {
                             fill: "lightgray",
                             portId: "",
                             fromLinkable: true,
@@ -593,9 +600,9 @@ class Gojs extends React.Component {
                             function (h) { return h ? 2 : 1; })
                             .ofObject(),
                     ),
-                 
+
                     $(go.Shape,
-                        { 
+                        {
                             toArrow: "",
                         },
                         new go.Binding("stroke", "isHighlighted",
@@ -606,7 +613,7 @@ class Gojs extends React.Component {
                             .ofObject(),
                         new go.Binding("toArrow", "isHighlighted",
                             function (h) { return h ? 'Standard' : ''; })
-                        .ofObject()
+                            .ofObject()
                     ),
                     $(go.Panel, "Auto",
                         $(go.Shape,  // the label background, which becomes transparent around the edges
@@ -633,7 +640,7 @@ class Gojs extends React.Component {
 
                             new go.Binding("text").makeTwoWay())
                     ),
-                     
+
 
                     {
                         fromShortLength: 20,
@@ -924,187 +931,254 @@ class Gojs extends React.Component {
         // myDiagram.model = myModel;
 
     }
-    
+
 
     d3BubbleInitor() {
         const data = {
             "name": "DT", "note": "Pack Layout Example", "children": [
-              
-              { "name": "AA", "note": "Dept.", "children": [ 
-                  { "name": "AP", "children": [
-                      { "name": "Calendar", "value": 100, "date": "2018-04-20" },
-                      { "name": "Calendar", "value": 100, "date": "2018-05-02" }
-                  ]}         
-                ]
-              },  
-              { "name": "HR", "note": "Dept.", "children": [ 
-                  { "name": "LB", "children": [
-                      { "name": "Directory", "value": 100, "date": "2018-09-28" }
-                  ]},
-                  { "name": "LF", "children": [
-                      { "name": "Holiday Schedule", "value": 100, "date": "2019-01-10" },
-                      { "name": "Employee Assistance", "value": 100, "date": "2019-06-20" }
-                  ]},     
-                ]
-              }, 
-              { "name": "IAP", "note": "Dept.", "children": [ 
-                  { "name": "JS", "children": [
-                      { "name": "Contact", "value": 100, "date": "2018-05-04" },
-                      { "name": "Contact", "value": 100, "date": "2018-05-09" },
-                      { "name": "Contact", "value": 100, "date": "2018-05-14" }
-                  ]}, 
-                  { "name": "MA", "children": [
-                      { "name": "Contact", "value": 100, "date": "2018-05-04" },
-                      { "name": "Contact", "value": 100, "date": "2018-05-09" },
-                      { "name": "Contact", "value": 100, "date": "2018-05-14" }
-                  ]}          
-                ]
-              },    
-              { "name": "IIT", "note": "Dept.", "children": [      
-                  { "name": "EF", "children": [
-                      { "name": "Policy", "value": 100, "date": "2018-05-01" }
-                  ]}, 
-                  { "name": "LL", "children": [
-                      { "name": "Stream", "value": 100, "date": "2018-05-17" }
-                  ]},  
-                  { "name": "MR", "children": [
-                      { "name": "Stream", "value": 100, "date": "2018-05-17" }
-                  ]},       
-                  { "name": "RK", "children": [
-                      { "name": "Flash", "value": 100, "date": "2017-12-07" },
-                      { "name": "Syllabi", "value": 100, "date": "2018-05-31" }
-                  ]},      
-                  { "name": "TS", "children": [ // support
-                      { "name": "Edge", "value": 100, "date": "2018-07-18" }
-                  ]} 
-                ]
-              },
-              { "name": "LA", "note": "Dept.", "children": [ 
-                  { "name": "BS", "children": [
-                      { "name": "Policies", "value": 100, "date": "2019-06-19" }
-                  ]}, 
-                  { "name": "DP", "children": [
-                      { "name": "Policies", "value": 100, "date": "2019-06-10" }
-                  ]}          
-                ]
-              },
-              { "name": "MPR", "note": "Dept.", "children": [    
-                  { "name": "AH", "children": [
-                      { "name": "Fire", "value": 100, "date": "2018-09-06" }
-                  ]}, 
-                  { "name": "CG", "children": [
-                      { "name": "App", "value": 100, "date": "2018-01-24" },
-                      { "name": "Fire", "value": 100, "date": "2018-09-06" },
-                      { "name": "Portal", "value": 100, "date": "2018-09-27" }
-                  ]}, 
-                  { "name": "DT", "children": [
-                      { "name": "Emergency", "value": 100, "date": "2018-09-11" }
-                  ]}, 
-                  { "name": "DW", "children": [
-                      { "name": "Emergency", "value": 100, "date": "2018-09-11" }
-                  ]}, 
-                  { "name": "JB", "children": [
-                      { "name": "DAM", "value": 100, "date": "2018-08-27" }
-                  ]},  
-                  { "name": "JH", "children": [
-                      { "name": "Grad App", "value": 100, "date": "2018-09-04" }
-                  ]},    
-                  { "name": "NH", "children": [
-                      { "name": "TDS", "value": 100, "date": "2019-06-20" }
-                  ]}, 
-                  { "name": "TB", "children": [
-                      { "name": "Screens", "value": 100, "date": "2018-08-02" },
-                      { "name": "Grad App", "value": 100, "date": "2018-09-04" },
-                      { "name": "Letterhead", "value": 100, "date": "2018-08-30" },
-                      { "name": "Fire", "value": 100, "date": "2018-09-06" },
-                      { "name": "Accomodations", "value": 100, "date": "2019-08-01" }
-                  ]},      
-                ]
-              },
-              { "name": "ORA", "note": "Dept.", "children": [      
-                  { "name": "SZ", "children": [
-                      { "name": "Net Price", "value": 100, "date": "2019-07-30" }
-                  ]}    
-                ]
-              },  
-              { "name": "SA", "note": "Dept.", "children": [      
-                  { "name": "JM", "children": [
-                      { "name": "PIN", "value": 100, "date": "2018-02-05" }
-                  ]},       
-                  { "name": "MR", "children": [
-                      { "name": "Chat", "value": 100, "date": "2018-04-30" },
-                      { "name": "Club", "value": 100, "date": "2018-09-05" },
-                      { "name": "Guide", "value": 100, "date": "2018-07-17" },
-                      { "name": "Open House", "value": 100, "date": "2019-05-10" },
-                      { "name": "Testing Centers", "value": 100, "date": "2019-05-13" },
-                      { "name": "Web Worksheet", "value": 100, "date": "2019-10-01" },
-                      { "name": "Tax Notification", "value": 100, "date": "2019-10-31" }  
-                  ]},      
-                ]
-              },    
-              { "name": "WDCE", "note": "Dept.", "children": [      
-                  { "name": "RS", "children": [
-                      { "name": "Training", "value": 100, "date": "2018-06-04" },
-                      { "name": "Advisors", "value": 100, "date": "2018-09-05" }
-                  ]},           
-                ]
-              }
-              
+
+                {
+                    "name": "AA", "note": "Dept.", "children": [
+                        {
+                            "name": "AP", "children": [
+                                { "name": "Calendar", "value": 100, "date": "2018-04-20" },
+                                { "name": "Calendar", "value": 100, "date": "2018-05-02" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "HR", "note": "Dept.", "children": [
+                        {
+                            "name": "LB", "children": [
+                                { "name": "Directory", "value": 100, "date": "2018-09-28" }
+                            ]
+                        },
+                        {
+                            "name": "LF", "children": [
+                                { "name": "Holiday Schedule", "value": 100, "date": "2019-01-10" },
+                                { "name": "Employee Assistance", "value": 100, "date": "2019-06-20" }
+                            ]
+                        },
+                    ]
+                },
+                {
+                    "name": "IAP", "note": "Dept.", "children": [
+                        {
+                            "name": "JS", "children": [
+                                { "name": "Contact", "value": 100, "date": "2018-05-04" },
+                                { "name": "Contact", "value": 100, "date": "2018-05-09" },
+                                { "name": "Contact", "value": 100, "date": "2018-05-14" }
+                            ]
+                        },
+                        {
+                            "name": "MA", "children": [
+                                { "name": "Contact", "value": 100, "date": "2018-05-04" },
+                                { "name": "Contact", "value": 100, "date": "2018-05-09" },
+                                { "name": "Contact", "value": 100, "date": "2018-05-14" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "IIT", "note": "Dept.", "children": [
+                        {
+                            "name": "EF", "children": [
+                                { "name": "Policy", "value": 100, "date": "2018-05-01" }
+                            ]
+                        },
+                        {
+                            "name": "LL", "children": [
+                                { "name": "Stream", "value": 100, "date": "2018-05-17" }
+                            ]
+                        },
+                        {
+                            "name": "MR", "children": [
+                                { "name": "Stream", "value": 100, "date": "2018-05-17" }
+                            ]
+                        },
+                        {
+                            "name": "RK", "children": [
+                                { "name": "Flash", "value": 100, "date": "2017-12-07" },
+                                { "name": "Syllabi", "value": 100, "date": "2018-05-31" }
+                            ]
+                        },
+                        {
+                            "name": "TS", "children": [ // support
+                                { "name": "Edge", "value": 100, "date": "2018-07-18" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "LA", "note": "Dept.", "children": [
+                        {
+                            "name": "BS", "children": [
+                                { "name": "Policies", "value": 100, "date": "2019-06-19" }
+                            ]
+                        },
+                        {
+                            "name": "DP", "children": [
+                                { "name": "Policies", "value": 100, "date": "2019-06-10" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "MPR", "note": "Dept.", "children": [
+                        {
+                            "name": "AH", "children": [
+                                { "name": "Fire", "value": 100, "date": "2018-09-06" }
+                            ]
+                        },
+                        {
+                            "name": "CG", "children": [
+                                { "name": "App", "value": 100, "date": "2018-01-24" },
+                                { "name": "Fire", "value": 100, "date": "2018-09-06" },
+                                { "name": "Portal", "value": 100, "date": "2018-09-27" }
+                            ]
+                        },
+                        {
+                            "name": "DT", "children": [
+                                { "name": "Emergency", "value": 100, "date": "2018-09-11" }
+                            ]
+                        },
+                        {
+                            "name": "DW", "children": [
+                                { "name": "Emergency", "value": 100, "date": "2018-09-11" }
+                            ]
+                        },
+                        {
+                            "name": "JB", "children": [
+                                { "name": "DAM", "value": 100, "date": "2018-08-27" }
+                            ]
+                        },
+                        {
+                            "name": "JH", "children": [
+                                { "name": "Grad App", "value": 100, "date": "2018-09-04" }
+                            ]
+                        },
+                        {
+                            "name": "NH", "children": [
+                                { "name": "TDS", "value": 100, "date": "2019-06-20" }
+                            ]
+                        },
+                        {
+                            "name": "TB", "children": [
+                                { "name": "Screens", "value": 100, "date": "2018-08-02" },
+                                { "name": "Grad App", "value": 100, "date": "2018-09-04" },
+                                { "name": "Letterhead", "value": 100, "date": "2018-08-30" },
+                                { "name": "Fire", "value": 100, "date": "2018-09-06" },
+                                { "name": "Accomodations", "value": 100, "date": "2019-08-01" }
+                            ]
+                        },
+                    ]
+                },
+                {
+                    "name": "ORA", "note": "Dept.", "children": [
+                        {
+                            "name": "SZ", "children": [
+                                { "name": "Net Price", "value": 100, "date": "2019-07-30" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "SA", "note": "Dept.", "children": [
+                        {
+                            "name": "JM", "children": [
+                                { "name": "PIN", "value": 100, "date": "2018-02-05" }
+                            ]
+                        },
+                        {
+                            "name": "MR", "children": [
+                                { "name": "Chat", "value": 100, "date": "2018-04-30" },
+                                { "name": "Club", "value": 100, "date": "2018-09-05" },
+                                { "name": "Guide", "value": 100, "date": "2018-07-17" },
+                                { "name": "Open House", "value": 100, "date": "2019-05-10" },
+                                { "name": "Testing Centers", "value": 100, "date": "2019-05-13" },
+                                { "name": "Web Worksheet", "value": 100, "date": "2019-10-01" },
+                                { "name": "Tax Notification", "value": 100, "date": "2019-10-31" }
+                            ]
+                        },
+                    ]
+                },
+                {
+                    "name": "WDCE", "note": "Dept.", "children": [
+                        {
+                            "name": "RS", "children": [
+                                { "name": "Training", "value": 100, "date": "2018-06-04" },
+                                { "name": "Advisors", "value": 100, "date": "2018-09-05" }
+                            ]
+                        },
+                    ]
+                }
+
             ]
-          };
-          
-          const packLayout = d3.pack()
+        };
+
+        const packLayout = d3.pack()
             .size([800, 800])
             .padding(14);
-          
-          const rootNode = d3.hierarchy(data)
-          
-          rootNode.sum(function(d) {
+
+        const rootNode = d3.hierarchy(data)
+
+        rootNode.sum(function (d) {
             return d.value;
-          });
-          
-          packLayout(rootNode);
-          
-          const nodes = d3.select('svg g')
+        });
+
+        packLayout(rootNode);
+
+        const nodes = d3.select('svg g')
             .selectAll('g')
             .data(rootNode.descendants())
             .enter()
             .append('g')
-            .attr('transform', function(d) {return 'translate(' + [d.x, d.y] + ')';})
+            .attr('transform', function (d) { return 'translate(' + [d.x, d.y] + ')'; })
             .attr('class', 'g')
-          .attr("class", function(d) { return "node" + (!d.children ? " node--leaf" : d.depth ? "" : " node--root"); })
-          
-          nodes
+            .attr("class", function (d) { return "node" + (!d.children ? " node--leaf" : d.depth ? "" : " node--root"); })
+
+        nodes
             .append('text')
             .attr('dy', 6)
             .attr('class', 'text')
-            .text(function(d) {
-             return d.children === undefined ? (d.data.name).charAt(0) : '';})
-          
-          nodes
+            .text(function (d) {
+                return d.children === undefined ? (d.data.name).charAt(0) : '';
+            })
+
+        nodes
             .append('circle')
-            .attr('r', function(d) { return d.r; })
+            .attr('r', function (d) { return d.r; })
             .attr('class', 'circle')
-          
-          const tooltip = d3.select('body').append('div')
+
+        const tooltip = d3.select('body').append('div')
             .attr('class', 'tooltip')
             .style('opacity', 0);
-          
-          nodes.selectAll('.circle')
+
+        nodes.selectAll('.circle')
             .on('mouseover', (d) => {
-              tooltip.transition().duration(200).style('opacity', 0.9);
-              tooltip.html(`${(d.data.name)} </br>${d.data.date ? d.data.date : '' }`)
-              .style('left', `${d3.event.layerX}px`)
-              .style('top', `${(d3.event.layerY - 10)}px`);
+                tooltip.transition().duration(200).style('opacity', 0.9);
+                tooltip.html(`${(d.data.name)} </br>${d.data.date ? d.data.date : ''}`)
+                    .style('left', `${d3.event.layerX}px`)
+                    .style('top', `${(d3.event.layerY - 10)}px`);
             })
             .on('mouseout', () => tooltip.transition().duration(500).style('opacity', 0));
     }
 
 
+    checkVerification = () => {
+        let hasVerified = localStorage.getItem('verToken')
+
+
+        this.setState({ hasVerified: hasVerified }, () => {
+            !!hasVerified && this.goJSInitor();
+        });
+
+    }
 
     componentDidMount() {
-
-        this.goJSInitor();
+        this.checkVerification();
+        // this.goJSInitor();
         // this.d3BubbleInitor();
     }
     tabSwitchor = (evt) => {
@@ -1113,30 +1187,91 @@ class Gojs extends React.Component {
     render() {
         return (
             <Fragment>
-                <ul className="position-tab" style={styleFuc()} onClick={this.tabSwitchor}>
-                    <li>LINE</li>
-                    <li>BUBBLE</li>
-                </ul>
-                <div id="myDiagramDiv"
-                    style={{ width: '100%', height: '100%', backgroundColor: '#DAE4E4' }}>
-                </div>
+
+                {
+                    this.state.hasVerified ? (
+
+                        <Fragment>
+                            <ul className="position-tab" style={styleFuc()} onClick={this.tabSwitchor}>
+                                <li>LINE</li>
+                                <li>BUBBLE</li>
+                            </ul>
+                            <div id="myDiagramDiv"
+                                style={{ width: '100%', height: '100%', backgroundColor: '#DAE4E4' }}>
+                            </div>
 
 
-                <svg style={{ width:"1200px", height: "1000px" }} >
-                    <g></g>
-                </svg>
+                            <svg style={{ width: "1200px", height: "1000px" }} >
+                                <g></g>
+                            </svg>
+                        </Fragment>
 
-          
+                    ) : <LoginTemplate LoginEventTure={this.checkVerification} />
+                }
+
+
+
+
             </Fragment>
 
         )
     }
 }
 
+
+let LoginTemplate = (props) => {
+
+    const [val, setVal] = useState('');
+
+
+    let enterKeyBinder = (event) => {
+
+        setVal(event.target.value);
+
+        switch (event.key) {
+            case 'Enter':
+                valiTool();
+                break
+        }
+
+    }
+
+    let valiTool = () => {
+        if (val.trim() === 'lzm88988898') {
+            localStorage.setItem('verToken', true)
+        }
+
+        props.LoginEventTure();
+    }
+
+
+
+    return (
+        <main className="login-main"
+            style={{
+                backgroundImage: 'url(http://shenye.louzm.cn/tairan/sbp-web/1912190358/static/img/sbp-login.c786606.png)',
+                height: '100%',
+                width: '100%',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+            }}
+        >
+            <article>
+                <p>楼掌门</p>
+                <div className="design-input">
+                    <input type="text" onKeyUp={enterKeyBinder} />
+                </div>
+            </article>
+
+
+        </main>
+    )
+}
+
 let styleFuc = () => ({
     position: 'fixed',
-    width: '400px',
-    height: '100px',
+    width: '150px',
+    height: '50px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -1145,7 +1280,7 @@ let styleFuc = () => ({
     margin: 0,
     padding: 0,
     listStyle: 'none',
-    fontSize: '45px',
+    fontSize: '15px',
     zIndex: 10,
 })
 
