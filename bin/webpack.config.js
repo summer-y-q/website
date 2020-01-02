@@ -130,7 +130,7 @@ module.exports = ({ ENV }) => {
         output: {
 
             path: path.resolve(__dirname, '../dist', './'),
-            filename:  ENV === 'DEVELOPMENT' ? 'static/js/common.js' : assetsPath('js/[name].js'),
+            filename:  ENV === 'DEVELOPMENT' ? '[name].js' : assetsPath('js/[name].js'),
             chunkFilename: assetsPath("js/[id].js"),
             // publicPath: `/dist/${nowTime()}/`
             publicPath: '/'
@@ -333,7 +333,25 @@ function getPluginArray(ENV) {
                 //   THREE: "three/build/three.min.js"
 
                   // ...
-              })
+              }),
+              new HtmlWebpackPlugin({
+                title: "ziwen's homePage",
+                inject: true,
+                version: VERSION,
+                ENV: ENV,
+                // favicon: {
+                //     icon: `${nowTime()}/static/img/favicon.ico`
+                // },
+                // hash: true,
+                // inject: false,
+                // filename: path.join(__dirname, '../dist/index.html'),
+                filename: path.join(__dirname, "../index.html"),
+                template: path.join(
+                    __dirname,
+                    "../static/sites/index.html"
+                )
+                // chunksSortMode: 'none'
+            }),
               // new MinifyPlugin({})
               // new CopyPlugin([
               //     { from: '../static/js/Util.js', to: '../dist' + BUILD_OBJECT.version }
